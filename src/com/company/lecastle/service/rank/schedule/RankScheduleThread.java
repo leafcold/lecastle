@@ -1,4 +1,4 @@
-package com.company.lecastle.service.rank.thread;
+package com.company.lecastle.service.rank.schedule;
 
 
 import com.company.lecastle.db.redis.RedisDbManager;
@@ -7,7 +7,6 @@ import com.company.lecastle.service.rank.bean.RankBean;
 import com.company.lecastle.service.rank.bean.RankBeanNode;
 import com.company.lecastle.service.rank.conf.ActiveConfig;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimerTask;
@@ -16,8 +15,8 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * 定时器 触发 排名线程
  */
-public class RankThread extends TimerTask {
-
+public class RankScheduleThread extends TimerTask {
+    //只rebuild一次 减少性能开销
     public static boolean flagRank =false;
 
     @Override

@@ -1,0 +1,103 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class GameRankControl
+class RedisDbManager
+class Player
+class RankBean
+class RankBeanNode
+class ActiveConfig
+class RankThread
+abstract TimerTask
+class GameRankService
+interface IGameRankService
+
+
+GameRankService <|-- IGameRankService
+IGameRankService o-- GameRankControl
+RankThread <|-- TimerTask
+Player *-- RankBean
+RankBean o-- RankBeanNode
+
+class GameRankControl{
+        void putPlayerScore(Player player, int score);
+        List<RankBean> rankFindBeforeRank(int size,long uid);
+        List<RankBean> rankFindNextRank(int size,long uid);
+        RankBean rankFindMyselfRank(long uid);
+}
+
+class RedisDbManager{
+
+        zSet(Double score , long uid)
+        //数据直接进redis  目前用Hash map 模拟数据
+        hSet(long uid, RankBean rankBean)
+        //获取到全部排行榜玩家信息
+        ConcurrentMap<Long,RankBean> hGet()
+        //获取到玩家信息
+        ConcurrentMap<Double,Long> zGet()
+}
+
+
+class RankThread{
+    run()
+}
+
+class ActiveConfig{
+     //活动结束时间
+     long OVER_ACTIVE_TIME
+     //最小分数
+     int MIN_SCORE
+     // 最大分数
+     int MAX_SCORE
+}
+
+class Player{
+    //玩家唯一标识
+    long uid
+    //玩家名字
+    String name
+    //玩家等级
+    int level
+}
+
+class RankBean{
+     //玩家
+     Player player
+     //分数
+     Double score
+     //排名
+     int rank
+     //时间
+     long time
+}
+
+class RankBeanNode{
+    RankBean  rankBean
+    //前驱节点
+    RankBean  rankBeanPrev
+    //后继节点
+    RankBean  rankBeanNext
+}
+
+class GameRankService {
+   void putPlayerScore();
+   Map<Long, RankBeanNode> getRankBeanNodeHashMap();
+   void setRankBeanNodeHashMap(Map<Long, RankBeanNode> rankBeanNodeHashMap);
+   Map<Long, RankBeanNode> rebuildDoubleLinkList(Map<Double,Long> scorePlayerIdMap, ConcurrentMap<Long, RankBean> playerIdRankBeanMap);
+   List<RankBean> rankFindBeforeRank(int size,long uid);
+   List<RankBean> rankFindNextRank(int size,long uid);
+   RankBean rankFindMyselfRank(long uid);
+}
+
+interface IGameRankService {
+   void putPlayerScore(Player player, int score);
+   Map<Long, RankBeanNode> getRankBeanNodeHashMap();
+   void setRankBeanNodeHashMap(Map<Long, RankBeanNode> rankBeanNodeHashMap);
+   Map<Long, RankBeanNode> rebuildDoubleLinkList(Map<Double,Long> scorePlayerIdMap, ConcurrentMap<Long, RankBean> playerIdRankBeanMap);
+   List<RankBean> rankFindBeforeRank(int size,long uid);
+   List<RankBean> rankFindNextRank(int size,long uid);
+   RankBean rankFindMyselfRank(long uid);
+}
+
+
+@enduml
